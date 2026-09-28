@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/REPLACE_WITH_GITHUB_OWNER/argocd-sample:initial
+          image: ghcr.io/ogawa-yasuyuki-0012166/argocd-sample:initial
           ports:
             - name: http
               containerPort: 80

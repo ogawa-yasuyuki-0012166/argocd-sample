@@ -4,5 +4,5 @@ resources:
   - deployment.yaml
   - service.yaml
 images:
-  - name: ghcr.io/REPLACE_WITH_GITHUB_OWNER/argocd-sample
-    newTag: initial
+  - name: ghcr.io/ogawa-yasuyuki-0012166/argocd-sample
+    newTag: 8acec567a282027cd81d581065a1c3d3bc60cad8
