@@ -1,0 +1,37 @@
+version: 2.1
+
+jobs:
+  build_publish_and_update_manifest:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build and publish image to GHCR
+          command: |
+            IMAGE="ghcr.io/${GHCR_OWNER}/argocd-sample"
+            echo "${GHCR_TOKEN}" | docker login ghcr.io -u "${GHCR_OWNER}" --password-stdin
+            docker build --tag "${IMAGE}:${CIRCLE_SHA1}" --tag "${IMAGE}:latest" .
+            docker push "${IMAGE}:${CIRCLE_SHA1}"
+            docker push "${IMAGE}:latest"
+      - run:
+          name: Update the GitOps image tag
+          command: |
+            sed -i "s|REPLACE_WITH_GITHUB_OWNER|${GHCR_OWNER}|g" k8s/base/deployment.yaml k8s/base/kustomization.yaml
+            sed -i "s|newTag: .*|newTag: ${CIRCLE_SHA1}|" k8s/base/kustomization.yaml
+            git diff --quiet && exit 0
+            git config user.name "circleci[bot]"
+            git config user.email "circleci@users.noreply.github.com"
+            git add k8s/base
+            git commit -m "chore: deploy ${CIRCLE_SHA1} [skip ci]"
+            git push "https://x-access-token:${GITOPS_PUSH_TOKEN}@github.com/${GHCR_OWNER}/argocd-sample.git" HEAD:main
+
+workflows:
+  build_deploy:
+    jobs:
+      - build_publish_and_update_manifest:
+          filters:
+            branches:
+              only: main

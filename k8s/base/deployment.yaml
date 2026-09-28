@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-sample
+  labels:
+    app.kubernetes.io/name: argocd-sample
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-sample
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: argocd-sample
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/REPLACE_WITH_GITHUB_OWNER/argocd-sample:initial
+          ports:
+            - name: http
+              containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
