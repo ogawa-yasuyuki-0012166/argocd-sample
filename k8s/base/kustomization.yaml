@@ -5,4 +5,4 @@ resources:
   - service.yaml
 images:
   - name: ghcr.io/ogawa-yasuyuki-0012166/argocd-sample
-    newTag: 8acec567a282027cd81d581065a1c3d3bc60cad8
+    newTag: 7ff106c03293c64698a538a5241d69fe356d48a8
